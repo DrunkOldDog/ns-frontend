@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
+import { postRequest } from "../../services/datasets";
+import { SERVER } from "../../services/server.config";
 import { initialState, reducer } from "./reducer";
 import * as TYPES from "./types";
 
@@ -21,8 +23,20 @@ export const useBalance = () => {
   const dispatch = useContext(BalanceDispatches);
 
   const balanceActions = {
-    loginUser: email => {
+    loginUser: async email => {
+      const resp = await fetch(SERVER.USER_BY_EMAIL(email));
+      const data = await resp.json();
+
+      console.log(data);
+
       dispatch({ type: TYPES.LOGIN_USER, email });
+    },
+    requestLoan: async amount => {
+      const { email, balance } = state;
+      const resp = await postRequest(SERVER.LOAN, { email, amount });
+      if (!resp.error) {
+        dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: balance + +amount });
+      }
     },
     updateBalance: payment => {
       const prevBalance = state.balance;

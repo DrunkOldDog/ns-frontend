@@ -7,7 +7,7 @@ export default function Loans() {
 
   const handleLoanSubmit = (e) => {
     e.preventDefault();
-    actions.updateBalance(-loansRef.current.value);
+    actions.requestLoan(loansRef.current.value);
   }
 
   return (
