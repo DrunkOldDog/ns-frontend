@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useBalance } from "../../common/context/balance";
 
-import { Snackbar } from "@material-ui/core";
+import { Snackbar, TextField, Button, Grid } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 import Balance from "../Balance";
@@ -30,8 +30,21 @@ export default function Home() {
       <h1>Check your loan status here!</h1>
       <p>Please, enter your email to validate your balance status</p>
       <form onSubmit={onEmailSearch}>
-        <input placeholder="Enter your email" ref={emailRef} type="email" />
-        <button>Validate Email</button>
+        <Grid container spacing={1} style={{ width: 500 }}>
+          <Grid item xs={7}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              placeholder="Enter your email"
+              inputRef={emailRef}
+              type="email"
+              style={{ width: "100%" }}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <button style={{ height: "100%" }}>Validate Email</button>
+          </Grid>
+        </Grid>
       </form>
 
       {email ? (
