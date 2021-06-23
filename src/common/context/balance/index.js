@@ -7,7 +7,7 @@ import * as TYPES from "./types";
 const BalanceState = createContext({});
 const BalanceDispatches = createContext();
 
-export default function BalanceProvider({ children }){
+export default function BalanceProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <BalanceState.Provider value={state}>
@@ -23,26 +23,36 @@ export const useBalance = () => {
   const dispatch = useContext(BalanceDispatches);
 
   const balanceActions = {
-    loginUser: async email => {
+    loginUser: async (email) => {
       const resp = await fetch(SERVER.USER_BY_EMAIL(email));
       const data = await resp.json();
 
       console.log(data);
 
-      dispatch({ type: TYPES.LOGIN_USER, email });
+      dispatch({
+        type: TYPES.LOGIN_USER,
+        email,
+        isNewUser: data.isNew,
+        balance: data.balance,
+      });
     },
-    requestLoan: async amount => {
+    requestLoan: async (amount) => {
       const { email, balance } = state;
       const resp = await postRequest(SERVER.LOAN, { email, amount });
+      console.log(resp);
       if (!resp.error) {
         dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: balance + +amount });
       }
     },
-    updateBalance: payment => {
+    updateBalance: (payment) => {
       const prevBalance = state.balance;
-      dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: prevBalance - payment });
-    }
-  }
+      dispatch({
+        type: TYPES.UPDATE_BALANCE,
+        newBalance: prevBalance - payment,
+      });
+    },
+    resetStateToDefault: () => dispatch({ type: TYPES.RESET_STATE }),
+  };
 
   return [state, balanceActions];
 };

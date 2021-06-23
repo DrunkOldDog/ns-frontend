@@ -1,10 +1,10 @@
-import { useRef } from 'react';
-import { useBalance } from '../../common/context/balance';
+import { useRef } from "react";
+import { useBalance } from "../../common/context/balance";
 
-import Balance from '../Balance';
-import Loans from '../Loans';
+import Balance from "../Balance";
+import Loans from "../Loans";
 
-import './styles.css';
+import "./styles.css";
 
 export default function Home() {
   const emailRef = useRef();
@@ -12,10 +12,11 @@ export default function Home() {
 
   const onEmailSearch = (e) => {
     e.preventDefault();
+    actions.resetStateToDefault();
     actions.loginUser(emailRef.current.value);
-  }
+  };
 
-  const { email, balance } = state;
+  const { email, balance, isNewUser } = state;
 
   return (
     <div>
@@ -28,7 +29,7 @@ export default function Home() {
 
       {email ? (
         <div className="home-content">
-          <h2>Hello {email}!</h2>
+          <h2>{`${isNewUser ? "Welcome" : "Welcome back"} ${email}!`}</h2>
           <h2>Your current balance is: ${balance}</h2>
           <p>What do you want to do next?</p>
           <Balance />
