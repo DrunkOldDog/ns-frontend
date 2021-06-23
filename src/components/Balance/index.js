@@ -15,7 +15,7 @@ export default function Balance() {
     <div>
       <form onSubmit={payBalance}>
         <h2>Pay debts</h2>
-        <input ref={balanceRef} type="number" />
+        <input placeholder="Insert Amount" ref={balanceRef} type="number" />
         <button>Pay Balance</button>
       </form>
     </div>

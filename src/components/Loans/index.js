@@ -15,7 +15,7 @@ export default function Loans() {
     <div>
       <h2>Take a loan:</h2>
       <form onSubmit={handleLoanSubmit}>
-        <input ref={loansRef} type="number" />
+        <input placeholder="Insert Amount" ref={loansRef} type="number" />
         <button>Take a loan</button>
       </form>
     </div>
