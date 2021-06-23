@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
-import { postRequest } from "../../services/datasets";
+import { getRequest, postRequest } from "../../services/datasets";
 import { SERVER } from "../../services/server.config";
 import { useAlerts } from "../alerts";
 import { initialState, reducer } from "./reducer";
@@ -26,17 +26,16 @@ export const useBalance = () => {
 
   const balanceActions = {
     loginUser: async (email) => {
-      const resp = await fetch(SERVER.USER_BY_EMAIL(email));
-      const data = await resp.json();
+      const resp = await getRequest(SERVER.USER_BY_EMAIL(email));
 
       dispatch({
         type: TYPES.LOGIN_USER,
         email,
-        isNewUser: data.isNew,
-        balance: data.amount,
+        isNewUser: resp.isNew,
+        balance: resp.amount,
       });
 
-      alertActions.onSuccessAlert(`Success! ${data.message}`);
+      alertActions.onSuccessAlert(`Success! ${resp.message}`);
     },
     requestLoan: async (amount) => {
       const resp = await postRequest(SERVER.LOAN, {

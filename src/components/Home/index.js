@@ -17,8 +17,10 @@ export default function Home() {
 
   const onEmailSearch = (e) => {
     e.preventDefault();
-    actions.resetStateToDefault();
-    actions.loginUser(emailRef.current.value);
+    if (emailRef.current.value) {
+      actions.resetStateToDefault();
+      actions.loginUser(emailRef.current.value);
+    }
   };
 
   const { email, balance, isNewUser } = state;
@@ -28,7 +30,7 @@ export default function Home() {
       <h1>Check your loan status here!</h1>
       <p>Please, enter your email to validate your balance status</p>
       <form onSubmit={onEmailSearch}>
-        <input ref={emailRef} type="email" />
+        <input placeholder="Enter your email" ref={emailRef} type="email" />
         <button>Validate Email</button>
       </form>
 
