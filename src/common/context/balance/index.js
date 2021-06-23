@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
 import { postRequest } from "../../services/datasets";
 import { SERVER } from "../../services/server.config";
+import { useAlerts } from "../alerts";
 import { initialState, reducer } from "./reducer";
 import * as TYPES from "./types";
 
@@ -21,13 +22,12 @@ export default function BalanceProvider({ children }) {
 export const useBalance = () => {
   const state = useContext(BalanceState);
   const dispatch = useContext(BalanceDispatches);
+  const [, alertActions] = useAlerts();
 
   const balanceActions = {
     loginUser: async (email) => {
       const resp = await fetch(SERVER.USER_BY_EMAIL(email));
       const data = await resp.json();
-
-      console.log(data);
 
       dispatch({
         type: TYPES.LOGIN_USER,
@@ -35,15 +35,20 @@ export const useBalance = () => {
         isNewUser: data.isNew,
         balance: data.amount,
       });
+
+      alertActions.onSuccessAlert(`Success! ${data.message}`);
     },
     requestLoan: async (amount) => {
       const resp = await postRequest(SERVER.LOAN, {
         email: state.email,
         amount,
       });
-      console.log(resp);
+
       if (!resp.error) {
         dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: resp.amount });
+        alertActions.onSuccessAlert(`Success! ${resp.message}`);
+      } else {
+        alertActions.onErrorAlert(`Error ${resp.error}: ${resp.message}`);
       }
     },
     updateBalance: async (payment) => {
@@ -51,12 +56,15 @@ export const useBalance = () => {
         email: state.email,
         amount: payment,
       });
-      console.log(resp);
+
       if (!resp.error) {
         dispatch({
           type: TYPES.UPDATE_BALANCE,
           newBalance: resp.amount,
         });
+        alertActions.onSuccessAlert(`Success! ${resp.message}`);
+      } else {
+        alertActions.onErrorAlert(`Error ${resp.error}: ${resp.message}`);
       }
     },
     resetStateToDefault: () => dispatch({ type: TYPES.RESET_STATE }),
