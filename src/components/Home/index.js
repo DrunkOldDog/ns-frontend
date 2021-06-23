@@ -1,13 +1,18 @@
 import { useRef } from "react";
 import { useBalance } from "../../common/context/balance";
 
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+
 import Balance from "../Balance";
 import Loans from "../Loans";
 
 import "./styles.css";
+import { useAlerts } from "../../common/context/alerts";
 
 export default function Home() {
   const emailRef = useRef();
+  const [alertState, alertActions] = useAlerts();
   const [state, actions] = useBalance();
 
   const onEmailSearch = (e) => {
@@ -36,6 +41,20 @@ export default function Home() {
           <Loans />
         </div>
       ) : null}
+
+      <Snackbar
+        open={alertState.display}
+        autoHideDuration={alertState.duration}
+        onClose={alertActions.onAlertDismiss}
+      >
+        <Alert
+          variant="filled"
+          severity={alertState.alertType}
+          onClose={alertActions.onAlertDismiss}
+        >
+          {alertState.content}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
