@@ -5,10 +5,11 @@ export default function Balance() {
   const balanceRef = useRef();
   const [, actions] = useBalance();
 
-  const payBalance = e => {
+  const payBalance = (e) => {
     e.preventDefault();
     actions.updateBalance(balanceRef.current.value);
-  }
+    balanceRef.current.value = "";
+  };
 
   return (
     <div>

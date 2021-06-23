@@ -8,7 +8,8 @@ export default function Loans() {
   const handleLoanSubmit = (e) => {
     e.preventDefault();
     actions.requestLoan(loansRef.current.value);
-  }
+    loansRef.current.value = "";
+  };
 
   return (
     <div>

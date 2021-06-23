@@ -33,23 +33,31 @@ export const useBalance = () => {
         type: TYPES.LOGIN_USER,
         email,
         isNewUser: data.isNew,
-        balance: data.balance,
+        balance: data.amount,
       });
     },
     requestLoan: async (amount) => {
-      const { email, balance } = state;
-      const resp = await postRequest(SERVER.LOAN, { email, amount });
+      const resp = await postRequest(SERVER.LOAN, {
+        email: state.email,
+        amount,
+      });
       console.log(resp);
       if (!resp.error) {
-        dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: balance + +amount });
+        dispatch({ type: TYPES.UPDATE_BALANCE, newBalance: resp.amount });
       }
     },
-    updateBalance: (payment) => {
-      const prevBalance = state.balance;
-      dispatch({
-        type: TYPES.UPDATE_BALANCE,
-        newBalance: prevBalance - payment,
+    updateBalance: async (payment) => {
+      const resp = await postRequest(SERVER.PAYMENTS, {
+        email: state.email,
+        amount: payment,
       });
+      console.log(resp);
+      if (!resp.error) {
+        dispatch({
+          type: TYPES.UPDATE_BALANCE,
+          newBalance: resp.amount,
+        });
+      }
     },
     resetStateToDefault: () => dispatch({ type: TYPES.RESET_STATE }),
   };
