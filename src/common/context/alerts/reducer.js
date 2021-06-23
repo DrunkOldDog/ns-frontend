@@ -1,9 +1,11 @@
 import * as TYPES from "./types";
 
+export const DEFAULT_DURATION = 6000;
+
 export const initialState = {
   display: false,
   alertType: "success",
-  duration: 6000,
+  duration: DEFAULT_DURATION,
   content: "",
 };
 
@@ -14,10 +16,11 @@ export const reducer = (state, action) => {
         display: true,
         alertType: action.alertType,
         content: action.content,
-        duration: action.duration !== undefined ? action.duration : 6000, // null is equal to infinite
+        duration:
+          action.duration !== undefined ? action.duration : DEFAULT_DURATION, // null is equal to infinite
       };
     case TYPES.ON_ALERT_RESET:
-      return { ...state, display: false, duration: 6000 };
+      return { ...state, display: false, duration: DEFAULT_DURATION };
     default:
       return state;
   }
